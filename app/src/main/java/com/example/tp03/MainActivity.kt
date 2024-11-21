@@ -7,6 +7,10 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
+import com.example.tp03.fragments.AppsFragment
+import com.example.tp03.fragments.ProfileFragment
+import com.example.tp03.fragments.ShopFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -16,26 +20,24 @@ class MainActivity : AppCompatActivity() {
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.main_bottomnavgation)
 
+        // 기본 화면을 AppsFragment로 설정
+        if (savedInstanceState == null) {
+            loadFragment(AppsFragment())  // 기본 화면으로 AppsFragment 설정
+        }
+
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.profile -> {
-                    val intent = Intent(this, ProfileActivity::class.java)
-                    startActivity(intent)
-
-                    return@setOnNavigationItemSelectedListener true
+                    loadFragment(ProfileFragment())
+                    true
                 }
                 R.id.shop -> {
-                    val intent = Intent(this, ShopActivity::class.java)
-                    startActivity(intent)
-
-                    return@setOnNavigationItemSelectedListener true
+                    loadFragment(ShopFragment())
+                    true
                 }
                 R.id.apps -> {
-                    val intent = Intent(this, MainActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP // MainActivity로 돌아가기
-                    startActivity(intent)
-
-                    return@setOnNavigationItemSelectedListener true
+                    loadFragment(AppsFragment())
+                    true
                 }
                 else -> false
             }
@@ -62,5 +64,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+    private fun loadFragment(fragment: Fragment) {
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.main_framelayout, fragment)  // main_framelayout에 Fragment 전환
+        transaction.commit()
     }
 }
